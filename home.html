@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antrean Pemohon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 90%;
+            width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+            margin: 0;
+            font-size: 1.8em;
+        }
+        
+        p {
+            color: #666;
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 10px auto;
+            width: 100px; /* bisa sesuaikan ukurannya */
+            height: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container"></div>
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Imigrasi" class="logo">
+    <h1>Sistem Monitoring Antrean</h1>
+    <h2>Paspor</h2>
+    <p>Kantor Imigrasi Kelas I Non TPI Pati</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Jenis Antrean</th>
+                <th>Nomor Antrean</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for queue_type, number in current_queue.items() %}
+            <tr>
+                <td>{{ queue_type }}</td>
+                <td id="queue-{{ queue_type|replace(' ', '-') }}">{{ number if number else "Belum Ada" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+  function updateQueue() {
+    fetch('/get_queue')
+      .then(response => response.json())
+      .then(data => {
+        for (const [key, value] of Object.entries(data)) {
+          const cell = document.getElementById('queue-' + key.replace(' ', '-'));
+          if (cell) {
+            cell.textContent = value || "Belum Ada";
+          }
+        }
+      });
+  }
+
+  // Jalankan pertama kali saat halaman dimuat
+  updateQueue();
+
+  // Jalankan setiap 3 detik
+  setInterval(updateQueue, 3000);
+</script>
+</body>
+</html>

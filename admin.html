@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Antrean</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+    h1, h2 { 
+      color: #333;
+      text-align: center;
+      margin: 0;
+      font-size: 1.8em;
+    }
+    table {
+      width: 90%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background-color: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 4px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .reset-btn {
+      background-color: #FF4D4D;
+    }
+    .reset-btn:hover {
+      background-color: #cc0000;
+    }
+    .bottom-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      position: absolute;
+      bottom: -30px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 10px auto;
+      width: 100px; /* bisa sesuaikan ukurannya */
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Imigrasi" class="logo">
+  <h1>Administrator</h1>
+  <h2>Sistem Monitoring Antrean Paspor</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Jenis Antrean</th>
+        <th>Nomor Antrean</th>
+        <th>Panggil Antrean</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for jenis, nomor in current_queue.items() %}
+      <tr>
+        <td>{{ jenis }}</td>
+        <td>{{ nomor if nomor else 'Belum Ada' }}</td>
+        <td>
+          <button onclick="location.href='/call_queue/{{ jenis }}/{{ jenis }}'">Panggil</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+    <div class="bottom-buttons">
+    <button onclick="confirmLogout()">Logout</button>
+    <form method="POST" action="/reset" onsubmit="return confirm('Yakin reset antrean?')">
+      <button type="submit" class="reset-btn">Reset Semua</button>
+    </form>
+  </div>
+
+  <script>
+    function confirmLogout() {
+      if (confirm("Apakah Anda yakin ingin keluar?")) {
+        window.location.href = "/logout";
+      }
+    }
+  </script>
+</body>
+</html>
